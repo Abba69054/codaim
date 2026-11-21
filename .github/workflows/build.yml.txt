@@ -1,0 +1,25 @@
+name: Build Dylib
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build Dylib
+        run: |
+          xcrun clang -dynamiclib \
+            -isysroot $(xcrun --sdk iphoneos --show-sdk-path) \
+            -arch arm64 \
+            -o libcodaim.dylib \
+            CodaimHook.m \
+            -framework Foundation \
+            -framework UIKit
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dylib
+          path: libcodaim.dylib
